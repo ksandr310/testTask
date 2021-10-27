@@ -1,97 +1,40 @@
 import React from 'react';
 import logo from './logo.svg';
+import { ListElement } from './types';
+import { getListItems } from './utils';
 import './App.css';
 
-
-function App() {
+const App = () => {
     // d - List of items that can be updated with new additional items when the button is pressed
-    var [d, set] = React.useState()
-
-    var fill = () => {
-        // The function fills the list for render with some items
-
-        [...Array(20)].forEach((_, index) => {
-            if (!Array.isArray(d)) {
-                // @ts-ignore
-                d = []
-            }
-
-            // @ts-ignore
-            d.push({
-                id: index, title: (function () {
-                    var result = [];
-                    for (var i = 0; i < 10; i++) {
-                        result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-                            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-                    }
-                    var string = result.join('');
-                    return string
-                })()
-            })
-        })
-        set(d)
-    }
+    const [list, setList] = React.useState<ListElement[]>([]);
 
     // Fills the List onmount
-    fill()
+    React.useEffect(() => {
+        setList(getListItems(20));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    var render = () => {
-        // renders the list of items as components
-
-        if (!Array.isArray(d)) {
-            // @ts-ignore
-            d = []
-        }
-        var result:any = []
-        // @ts-ignore
-        d.forEach(function (i, index) {
-            result.push(<div className={'App-item'}>{'Title is:' + i.title + '!'}</div>)
-        })
-        return result
-    }
+    const onClick = () => setList((list) => [...list, ...getListItems(20)]);
 
     return (
         <div className="App">
             <div className="App-header">
-                <img src={logo} className="App-logo" alt="logo"/>
+                <img src={logo} className="App-logo" alt="logo" />
             </div>
             <div>
-                <button className={"App-button"} onClick={() => {
-                    // The Function adds new items to the existing list
-
-                    if (!Array.isArray(d)) {
-                        // @ts-ignore
-                        d = []
-                    }
-                    [...Array(20)].forEach((_, index) => {
-                        if (!Array.isArray(d)) {
-                            // @ts-ignore
-                            d = []
-                        }
-                        // @ts-ignore
-                        d.push({
-                            id: index, title: (function () {
-                                var result = [];
-                                for (var i = 0; i < 10; i++) {
-                                    result.push('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.charAt(Math.floor(Math.random() *
-                                        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.length)));
-                                }
-                                var string = result.join('');
-                                return string
-                            })()
-                        })
-                    })
-                    // @ts-ignore
-                    set(d)
-                }}>
+                <button className={'App-button'} onClick={onClick}>
                     Add More
                 </button>
             </div>
             <div>
-                {render()}
+                {list.map((item) => (
+                    <div key={item.id} className={'App-item'}>
+                        {'Title is: ' + item.title + '!'}
+                    </div>
+                ))}
             </div>
         </div>
     );
-}
+};
 
 export default App;
